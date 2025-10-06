@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - BookStore{% endblock %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <i class="fas fa-server fa-5x text-danger mb-4"></i>
+            <h1>500 - Server Error</h1>
+            <p class="lead">Something went wrong on our end. Please try again later.</p>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Go Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

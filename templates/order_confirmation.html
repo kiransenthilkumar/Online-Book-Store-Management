@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Order Confirmation - BookStore{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white text-center">
+                    <h2 class="mb-0"><i class="fas fa-check-circle"></i> Order Confirmed!</h2>
+                </div>
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="fas fa-gift fa-5x text-success mb-3"></i>
+                        <h3>Thank You for Your Order!</h3>
+                        <p class="lead">Your order has been successfully placed.</p>
+                    </div>
+                    
+                    <div class="row text-start">
+                        <div class="col-md-6">
+                            <h5>Order Details</h5>
+                            <p><strong>Order ID:</strong> #{{ order.id }}</p>
+                            <p><strong>Order Date:</strong> {{ order.created_at }}</p>
+                            <p><strong>Total Amount:</strong> ${{ "%.2f"|format(order.total_amount * 1.1) }}</p>
+                            <p><strong>Status:</strong> <span class="badge bg-success">{{ order.status }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Shipping Information</h5>
+                            <p><strong>Payment Method:</strong> {{ order.payment_method|replace('_', ' ')|title }}</p>
+                            <p><strong>Shipping Address:</strong><br>{{ order.shipping_address }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <p>You will receive an email confirmation shortly.</p>
+                        <div class="d-grid gap-2 d-md-block">
+                            <a href="{{ url_for('index') }}" class="btn btn-primary">Continue Shopping</a>
+                            <a href="{{ url_for('profile') }}" class="btn btn-outline-primary">View Order History</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Orders{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-shopping-cart"></i> Manage Orders</h1>
+    
+    <div class="btn-group">
+        <a href="{{ url_for('admin_orders', status='all') }}" 
+           class="btn btn-{{ 'primary' if status_filter == 'all' else 'outline-primary' }}">All</a>
+        <a href="{{ url_for('admin_orders', status='pending') }}" 
+           class="btn btn-{{ 'warning' if status_filter == 'pending' else 'outline-warning' }}">Pending</a>
+        <a href="{{ url_for('admin_orders', status='completed') }}" 
+           class="btn btn-{{ 'success' if status_filter == 'completed' else 'outline-success' }}">Completed</a>
+        <a href="{{ url_for('admin_orders', status='cancelled') }}" 
+           class="btn btn-{{ 'danger' if status_filter == 'cancelled' else 'outline-danger' }}">Cancelled</a>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Payment Method</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.username }}</td>
+                        <td>${{ "%.2f"|format(order.total_amount) }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if order.status == 'completed' else 'warning' if order.status == 'pending' else 'danger' }}">
+                                {{ order.status }}
+                            </span>
+                        </td>
+                        <td>{{ order.payment_method|replace('_', ' ')|title }}</td>
+                        <td>{{ order.created_at }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('update_order_status', order_id=order.id) }}" class="d-inline">
+                                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                    <option value="pending" {{ 'selected' if order.status == 'pending' }}>Pending</option>
+                                    <option value="completed" {{ 'selected' if order.status == 'completed' }}>Completed</option>
+                                    <option value="cancelled" {{ 'selected' if order.status == 'cancelled' }}>Cancelled</option>
+                                </select>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

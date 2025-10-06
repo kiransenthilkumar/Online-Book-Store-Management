@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Book Store{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        
+        /* Clean Header Styles */
+        .navbar {
+            background: linear-gradient(135deg, #007bff  0%, #0058b7  100%) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 0.8rem 0;
+        }
+        
+        .navbar-brand {
+            font-size: 1.8rem !important;
+            font-weight: 700;
+            color: #ffffff !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            transform: translateY(-1px);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            padding: 0.6rem 1rem !important;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            margin: 0 0.2rem;
+            color: rgba(255, 255, 255, 0.9) !important;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white !important;
+            transform: translateY(-1px);
+        }
+        
+        /* Search Form Styles */
+        .search-form {
+            position: relative;
+            margin-right: 1rem;
+        }
+        
+        .search-input {
+            border: none;
+            border-radius: 20px;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            width: 300px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .search-input:focus {
+            background: white;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+            outline: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            z-index: 2;
+        }
+        
+        /* Dropdown Styles */
+        .dropdown-menu {
+            background: white;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 0.5rem;
+        }
+        
+        .dropdown-item {
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        
+        .dropdown-item:hover {
+            background: #3498db;
+            color: white;
+        }
+        
+        /* User Dropdown */
+        .user-dropdown .dropdown-menu {
+            min-width: 200px;
+        }
+        
+        /* Clean Footer */
+        .footer {
+            background: #2c3e50;
+            color: #ecf0f1;
+            margin-top: auto;
+        }
+        
+        .footer a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: #3498db;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .search-input {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Clean Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                </i>Book Store
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-list me-1"></i>Genres
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('books_by_genre', genre='Fiction') }}">Fiction</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('books_by_genre', genre='Mystery') }}">Mystery</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('books_by_genre', genre='Science Fiction') }}">Science Fiction</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('books_by_genre', genre='Fantasy') }}">Fantasy</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('books_by_genre', genre='Romance') }}">Romance</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('books_by_genre', genre='Thriller') }}">Thriller</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('books_by_genre', genre='Biography') }}">Biography</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('books_by_genre', genre='History') }}">History</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('books_by_genre', genre='Science') }}">Science</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('books_by_genre', genre='Children') }}">Children</a></li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <!-- Clean Search Form -->
+                <form class="search-form me-3" action="{{ url_for('search') }}" method="GET">
+                    <i class="fas fa-search search-icon"></i>
+                    <input class="search-input" type="search" name="q" placeholder="Search books..." aria-label="Search">
+                </form>
+
+                <ul class="navbar-nav">
+                    {% if user_info.is_logged_in %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('cart') }}">
+                                <i class="fas fa-shopping-cart me-1"></i>Cart
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown user-dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-user me-1"></i>
+                                {{ user_info.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li class="dropdown-header text-muted small">
+                                    <i class="fas fa-user me-1"></i>
+                                    {{ user_info.username }}
+                                    <br><span class="badge bg-{{ 'warning' if user_info.user_type == 'admin' else 'primary' }} mt-1">
+                                        {{ user_info.user_type|title }}
+                                    </span>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                
+                                {% if user_info.user_type == 'user' %}
+                                    <li><a class="dropdown-item" href="{{ url_for('profile') }}"><i class="fas fa-user-circle me-2"></i>Profile</a></li>
+                                {% endif %}
+                                
+                                {% if user_info.is_admin %}
+                                    {% if user_info.user_type == 'admin' %}
+                                        <li><a class="dropdown-item" href="{{ url_for('admin_dashboard') }}"><i class="fas fa-cog me-2"></i>Admin Panel</a></li>
+                                        <li><a class="dropdown-item" href="{{ url_for('switch_to_user_mode') }}"><i class="fas fa-exchange-alt me-2"></i>User Mode</a></li>
+                                    {% else %}
+                                        <li><a class="dropdown-item" href="{{ url_for('switch_to_admin_mode') }}"><i class="fas fa-exchange-alt me-2"></i>Admin Mode</a></li>
+                                    {% endif %}
+                                {% endif %}
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                
+                                {% if user_info.user_type == 'admin' %}
+                                    <li><a class="dropdown-item text-danger" href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('login') }}">
+                                <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('register') }}">
+                                <i class="fas fa-user-plus me-1"></i>Register
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('admin_login') }}">
+                                <i class="fas fa-lock me-1"></i>Admin
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'warning' if category == 'warning' else 'info' }} alert-dismissible fade show">
+                        <div class="d-flex align-items-center">
+                            {% if category == 'success' %}
+                                <i class="fas fa-check-circle me-2"></i>
+                            {% elif category == 'error' %}
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                            {% elif category == 'warning' %}
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle me-2"></i>
+                            {% endif %}
+                            <div>{{ message }}</div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Clean Minimal Footer -->
+    <footer class="footer py-4 mt-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5 class="mb-2"><i class="fas fa-book me-2"></i>BookStore</h5>
+                    <p class="mb-0 text-muted">Your online destination for amazing books</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <div class="social-links mb-2">
+                        <a href="#" class="me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                        <a href="#"><i class="fab fa-goodreads fa-lg"></i></a>
+                    </div>
+                    <small class="text-muted">&copy; 2024 BookStore. All rights reserved.</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>

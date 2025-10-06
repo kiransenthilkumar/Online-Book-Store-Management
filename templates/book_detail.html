@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}{{ book.title }} - BookStore{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('books_by_genre', genre=book.genre) }}">{{ book.genre }}</a></li>
+            <li class="breadcrumb-item active">{{ book.title }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ url_for('static', filename='images/books/' + book.cover_image) if book.cover_image else url_for('static', filename='images/books/default.jpg') }}" 
+                 class="img-fluid rounded shadow" alt="{{ book.title }}">
+        </div>
+        <div class="col-md-8">
+            <h1>{{ book.title }}</h1>
+            <p class="text-muted h4">by {{ book.author }}</p>
+            
+            <div class="my-4">
+                <span class="h3 text-primary">${{ "%.2f"|format(book.price) }}</span>
+                <span class="badge bg-{{ 'success' if book.stock > 10 else 'warning' if book.stock > 0 else 'danger' }} ms-2">
+                    {{ book.stock }} in stock
+                </span>
+            </div>
+
+            <div class="book-details mb-4">
+                <p><strong>Genre:</strong> {{ book.genre }}</p>
+                <p><strong>Publisher:</strong> {{ book.publisher }}</p>
+                <p><strong>Pages:</strong> {{ book.pages }}</p>
+                <p><strong>ISBN:</strong> {{ book.isbn }}</p>
+            </div>
+
+            <p class="lead">{{ book.description }}</p>
+
+            {% if book.stock > 0 %}
+            <form method="POST" action="{{ url_for('add_to_cart', book_id=book.id) }}" class="row g-3 align-items-center">
+                <div class="col-auto">
+                    <label for="quantity" class="form-label"><strong>Quantity:</strong></label>
+                </div>
+                <div class="col-auto">
+                    <input type="number" class="form-control" id="quantity" name="quantity" value="1" min="1" max="{{ book.stock }}" style="width: 80px;">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-cart-plus"></i> Add to Cart
+                    </button>
+                </div>
+            </form>
+            {% else %}
+            <button class="btn btn-secondary btn-lg" disabled>Out of Stock</button>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Related Books -->
+    {% if related_books %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3>Related Books</h3>
+            <div class="row">
+                {% for related_book in related_books %}
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
+                    <div class="card h-100">
+                        <img src="{{ url_for('static', filename='images/books/' + related_book.cover_image) if related_book.cover_image else url_for('static', filename='images/books/default.jpg') }}" 
+                             class="card-img-top" alt="{{ related_book.title }}" style="height: 150px; object-fit: cover;">
+                        <div class="card-body p-2">
+                            <h6 class="card-title small">{{ related_book.title[:20] }}{% if related_book.title|length > 20 %}...{% endif %}</h6>
+                            <p class="card-text small text-muted mb-1">{{ related_book.author[:15] }}{% if related_book.author|length > 15 %}...{% endif %}</p>
+                            <p class="card-text small fw-bold text-primary mb-1">${{ "%.2f"|format(related_book.price) }}</p>
+                            <a href="{{ url_for('book_detail', book_id=related_book.id) }}" class="btn btn-sm btn-outline-primary w-100">View</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Manage Books{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-book"></i> Manage Books</h1>
+    <a href="{{ url_for('add_book') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Add New Book
+    </a>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Cover</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Genre</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>
+                            <img src="{{ url_for('static', filename='images/books/' + book.cover_image) if book.cover_image else url_for('static', filename='images/books/default.jpg') }}" 
+                                 class="img-thumbnail" style="width: 50px; height: 70px; object-fit: cover;" alt="{{ book.title }}">
+                        </td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.genre }}</td>
+                        <td>${{ "%.2f"|format(book.price) }}</td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if book.stock > 10 else 'warning' if book.stock > 0 else 'danger' }}">
+                                {{ book.stock }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-{{ 'success' if book.is_active else 'secondary' }}">
+                                {{ 'Active' if book.is_active else 'Inactive' }}
+                            </span>
+                            {% if book.is_featured %}
+                            <span class="badge bg-info">Featured</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('edit_book', book_id=book.id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

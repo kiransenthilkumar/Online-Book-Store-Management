@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Home - BookStore{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold">Discover Your Next Favorite Book</h1>
+                <p class="lead">Explore our vast collection of books across all genres. From classic literature to modern bestsellers.</p>
+                <a href="#featured" class="btn btn-light btn-lg mt-3">Explore Books</a>
+            </div>
+            <div class="col-lg-6 text-center">
+                <i class="fas fa-book-open display-1"></i>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Books -->
+<section id="featured" class="py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">Featured Books</h2>
+        <div class="row">
+            {% for book in featured_books %}
+            <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+                <div class="card h-100 book-card">
+                    <img src="{{ url_for('static', filename='images/books/' + book.cover_image) if book.cover_image else url_for('static', filename='images/books/default.jpg') }}" 
+                         class="card-img-top" alt="{{ book.title }}" style="height: 200px; object-fit: cover;">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ book.title }}</h5>
+                        <p class="card-text text-muted">{{ book.author }}</p>
+                        <p class="card-text">{{ book.description[:100] }}...</p>
+                        <div class="mt-auto">
+                            <p class="card-text fw-bold text-primary">${{ "%.2f"|format(book.price) }}</p>
+                            <a href="{{ url_for('book_detail', book_id=book.id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Books by Genre -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Browse by Genre</h2>
+        {% for genre, books in books_by_genre.items() %}
+        <div class="genre-section mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h3>{{ genre }}</h3>
+                <a href="{{ url_for('books_by_genre', genre=genre) }}" class="btn btn-outline-primary">View All</a>
+            </div>
+            <div class="row">
+                {% for book in books %}
+                <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-3">
+                    <div class="card h-100">
+                        <img src="{{ url_for('static', filename='images/books/' + book.cover_image) if book.cover_image else url_for('static', filename='images/books/default.jpg') }}" 
+                             class="card-img-top" alt="{{ book.title }}" style="height: 150px; object-fit: cover;">
+                        <div class="card-body p-2">
+                            <h6 class="card-title small">{{ book.title[:20] }}{% if book.title|length > 20 %}...{% endif %}</h6>
+                            <p class="card-text small text-muted mb-1">{{ book.author[:15] }}{% if book.author|length > 15 %}...{% endif %}</p>
+                            <p class="card-text small fw-bold text-primary mb-1">${{ "%.2f"|format(book.price) }}</p>
+                            <a href="{{ url_for('book_detail', book_id=book.id) }}" class="btn btn-sm btn-outline-primary w-100">View</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
